@@ -1,4 +1,4 @@
-import editRouter from "./editnotesRoute.js"
+import addNotesRouter from "./addnotesRoute.js"
 import usernotes from "./userNotes.js"
 import conctRouter from "./contactRoute.js"
 import discordloginRoute from "./discordLoginRoute.js"
@@ -9,7 +9,7 @@ import { Router } from "express"
 
 const router = Router();
 
-router.use(editRouter);
+router.use(addNotesRouter);
 router.use(usernotes);
 router.use(conctRouter);
 router.use(signinRoute);

@@ -2,30 +2,20 @@ import mongoose from "mongoose";
 
 const noteSchema = new mongoose.Schema({
     username: {
+        require: true,
         type: mongoose.Schema.Types.String,
-        require: true,
-        unique: true,
+        unique: false,
     },
-    notes: {
-        type: mongoose.Schema.Types.Array,
+    topic: {
         require: true,
+        type: mongoose.Schema.Types.String,
     },
+    content: {
+        require: true,
+        type: mongoose.Schema.Types.String
+    }
 })
-// const noteSchema = new mongoose.Schema({
-//     username: {
-//         type: mongoose.Schema.Types.String,
-//         require: true,
-//         unique: true,
-//     },
-//     topic: {
-//         type: mongoose.Schema.Types.String,
-//         require: true,
-//     },
-//     content: {
-//         type: mongoose.Schema.Types.String,
-//         require: true,
-//     }
-// })
 
 
-export const Note = mongoose.model("Note", noteSchema)
+
+export const Notes = mongoose.model("Notes", noteSchema)
