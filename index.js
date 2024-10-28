@@ -14,8 +14,14 @@ main().catch(err => console.log(err));
 async function main() {
     await mongoose.connect("mongodb+srv://dhuruvbansl99:Shubham123@cluster0.jos6q.mongodb.net/");
 }
+const allowCrossDomain = (req, res, next) => {
+    res.header(`Access-Control-Allow-Origin`, `*`);
+    res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
+    res.header(`Access-Control-Allow-Headers`, `Content-Type`);
+    next();
+};
 const corsOptions = {
-    origin: port,
+    origin: true,
     credentials: true,
     optionSuccessStatus: 200,
 }
@@ -42,7 +48,7 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-
+app.use(allowCrossDomain);
 
 app.use(router)
 

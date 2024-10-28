@@ -8,6 +8,7 @@ let userid = null
 
 function isAuthenticated(req, res, next) {
     req.sessionStore.get(req.sessionID, async (err, sessionData) => {
+        console.log(req.sessionID)
         if (err) {
             res.send({ "msg": "please login to use this service" }).status(401)
             return
