@@ -22,12 +22,11 @@ router.post("/signin", checkSchema(checkUserSchema), async (req, res) => {
     res.send({ "valid": true }).status(200)
 })
 
-// router.get("/signin", passport.authenticate("local"))
-
-// router.get("/auth", passport.authenticate("local"), (req, res) => {
-//     console.log(`thiss is${req.user}`)
-//     res.sendStatus(200)
-// })
+router.post("/signin2", async (req, res) => {
+    const user = new NewUser(req.body)
+    await user.save()
+    res.sendStatus(200)
+})
 
 
 

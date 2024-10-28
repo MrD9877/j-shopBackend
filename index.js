@@ -11,7 +11,7 @@ const port = 3000
 
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect(`${process.env.Connection_String}/onotes`);
+    await mongoose.connect("mongodb+srv://dhuruvbansal99:nIMhX3ykjRULXjcn@cluster0.jos6q.mongodb.net");
 }
 const corsOptions = {
     origin: port,
