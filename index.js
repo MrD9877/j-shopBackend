@@ -11,7 +11,7 @@ const port = 3000
 
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect("mongodb://localhost:27017/onotes");
+    await mongoose.connect(`${process.env.Connection_String}/onotes`);
 }
 const corsOptions = {
     origin: port,
