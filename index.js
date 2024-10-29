@@ -16,7 +16,7 @@ async function main() {
 }
 
 const corsOptions = {
-    origin: ["https://mrd9877.github.io/Onote/", "http://localhost:3001/*"],
+    origin: ["https://mrd9877.github.io/Onote/", "http://localhost:3001"],
     credentials: true,
     methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
     allowedHeaders: ['Content-Type'],
