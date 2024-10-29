@@ -16,7 +16,7 @@ async function main() {
 }
 
 const corsOptions = {
-    origin: ["https://mrd9877.github.io/", "http://localhost:3001"],
+    origin: ["https://mrd9877.github.io", "http://localhost:3001"],
     credentials: true,
     methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
     allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With', 'Origin', 'Accept'],
@@ -36,7 +36,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 60000 * 60,
-        httpOnly: true,
+        secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+        httpOnly: false,
         withCredentials: true,
         sameSite: 'Lax',
     },
