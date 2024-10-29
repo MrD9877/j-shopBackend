@@ -36,7 +36,6 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 60000 * 60,
-        secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
         httpOnly: false,
         withCredentials: true,
         sameSite: 'None',
