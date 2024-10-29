@@ -21,7 +21,7 @@ const corsOptions = {
     optionSuccessStatus: 200,
 }
 
-app.all('http://localhost:3000/*', function (req, res, next) {
+app.all('http://localhost:3001/*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     next();
