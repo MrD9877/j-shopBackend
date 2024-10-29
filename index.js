@@ -38,6 +38,8 @@ app.use(session({
         maxAge: 60000 * 60,
         httpOnly: false,
         withCredentials: true,
+        secure: isSecure,      // Send cookie only over HTTPS
+        sameSite: 'Lax',
     },
     store: MongoStore.create({
         client: mongoose.connection.getClient()
