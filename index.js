@@ -19,7 +19,7 @@ const corsOptions = {
     origin: ["https://mrd9877.github.io/Onote/", "http://localhost:3001"],
     credentials: true,
     methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With', 'Origin', 'Accept'],
     optionSuccessStatus: 200,
 }
 
