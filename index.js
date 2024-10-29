@@ -16,11 +16,12 @@ async function main() {
 }
 
 const corsOptions = {
-    origin: true,
+    origin: ["https://mrd9877.github.io/Onote/", "http://localhost:3001"],
     credentials: true,
+    methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+    allowedHeaders: ['Content-Type'],
     optionSuccessStatus: 200,
 }
-
 
 app.use(cors(corsOptions))
 
