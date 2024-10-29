@@ -14,6 +14,8 @@ main().catch(err => console.log(err));
 async function main() {
     await mongoose.connect("mongodb+srv://dhuruvbansl99:Shubham123@cluster0.jos6q.mongodb.net/");
 }
+app.use(cookieParser())
+
 
 const corsOptions = {
     origin: ["https://mrd9877.github.io", "http://localhost:3001"],
@@ -29,7 +31,6 @@ app.use(cors(corsOptions))
 app.use(express.json({
     type: ['application/json', 'text/plain']
 }))
-app.use(cookieParser())
 app.use(session({
     secret: 'Super secret secret',
     resave: false,
