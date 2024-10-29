@@ -16,7 +16,7 @@ async function main() {
 }
 
 const corsOptions = {
-    origin: true,
+    origin: ['http://localhost:3001', 'https://mrd9877.github.io/'],
     credentials: true,
     optionSuccessStatus: 200,
 }
