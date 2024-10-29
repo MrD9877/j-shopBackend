@@ -39,7 +39,7 @@ app.use(session({
         secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
         httpOnly: false,
         withCredentials: true,
-        sameSite: 'Lax',
+        sameSite: 'None',
     },
     store: MongoStore.create({
         client: mongoose.connection.getClient()
