@@ -39,6 +39,7 @@ app.use(session({
         httpOnly: false,
         withCredentials: true,
         sameSite: 'None',
+        secure: true
     },
     store: MongoStore.create({
         client: mongoose.connection.getClient()
