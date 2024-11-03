@@ -2,7 +2,7 @@ import express from "express"
 import mongoose from "mongoose";
 import router from "./routes/index.js"
 import cors from "cors"
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import session from "express-session";
@@ -34,6 +34,7 @@ app.use(session({
     secret: 'Super secret secret',
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
         maxAge: 60000 * 60,
         httpOnly: true,
