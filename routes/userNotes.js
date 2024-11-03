@@ -24,6 +24,7 @@ function isAuthenticated(req, res, next) {
 }
 
 router.get('/usernotes', isAuthenticated, async (req, res) => {
+    console.log(req.cookies)
     const findUser = await NewUser.findById(userid)
     if (!findUser) {
         res.send({ "msg": "invalid user" }).status(401)
