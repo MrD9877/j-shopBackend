@@ -1,32 +1,23 @@
 import { Router } from "express";
 import { Notes } from "../mongooseSchemas/notesSchema.js";
-import { NewUser } from "../mongooseSchemas/signinUser.Schema.js";
+import { authToken } from "../utility/authToken.js";
 
 
 const router = Router();
-let userid = null
 
 function isAuthenticated(req, res, next) {
-    req.sessionStore.get(req.sessionID, async (err, sessionData) => {
-        if (err) {
-            res.send({ "msg": "please login to use this service" }).status(401)
-        }
-        if (sessionData !== null) {
-            userid = await sessionData.user;
-            next()
-        } else {
-            res.sendStatus(402)
-        }
-
-    })
+    console.log("here")
+    const accessToken = req.cookies.accessToken
+    if (accessToken === null) return res.sendStatus(401)
+    const user = authToken(accessToken)
+    if (user === 403) return res.sendStatus(403)
+    res.user = user
+    next()
 }
-
 
 router.post('/addnotes', isAuthenticated, async (req, res) => {
     const data = req.body
-    const findUser = await NewUser.findById(userid)
-    if (!findUser) return res.send({ "msg": "invalid user" }).status(401)
-    const username = findUser.username
+    const username = res.user.username
     try {
         const notes = new Notes({ username: username, ...data })
         await notes.save()

@@ -2,10 +2,10 @@ import express from "express"
 import mongoose from "mongoose";
 import router from "./routes/index.js"
 import cors from "cors"
-// import cookieParser from "cookie-parser";
-import passport from "passport";
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import cookieParser from "cookie-parser";
+
 const app = express()
 const port = 3000
 
@@ -46,8 +46,8 @@ app.use(session({
         client: mongoose.connection.getClient()
     })
 }))
-app.use(passport.initialize())
-app.use(passport.session())
+
+app.use(cookieParser())
 
 app.use(router)
 

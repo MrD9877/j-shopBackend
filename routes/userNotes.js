@@ -1,35 +1,21 @@
 import { Router } from "express";
 import { Notes } from "../mongooseSchemas/notesSchema.js";
-import { NewUser } from "../mongooseSchemas/signinUser.Schema.js";
+import { authToken } from "../utility/authToken.js";
 
 
 const router = Router();
-let userid = null
 
 function isAuthenticated(req, res, next) {
-    console.log(req.cookies)
-    req.sessionStore.get(req.sessionID, async (err, sessionData) => {
-        if (err) {
-            res.send({ "msg": "please login to use this service" }).status(401)
-            return
-        }
-        if (sessionData !== null) {
-            userid = await sessionData.user;
-            next()
-        } else {
-            res.sendStatus(402)
-        }
-
-    })
+    const accessToken = req.cookies.accessToken
+    if (accessToken === null) return res.sendStatus(401)
+    const user = authToken(accessToken)
+    if (user === 403) return res.sendStatus(403)
+    res.user = user
+    next()
 }
 
 router.get('/usernotes', isAuthenticated, async (req, res) => {
-    const findUser = await NewUser.findById(userid)
-    if (!findUser) {
-        res.send({ "msg": "invalid user" }).status(401)
-        return
-    }
-    const username = findUser.username
+    const username = res.user.username
     const findUserNotes = await Notes.find({ username: username }).exec()
     res.send(findUserNotes)
 
@@ -37,8 +23,8 @@ router.get('/usernotes', isAuthenticated, async (req, res) => {
 
 
 router.delete('/usernotes', isAuthenticated, async (req, res) => {
-    const noteID = req.body
-    await Notes.findByIdAndDelete(noteID._id)
+    const noteID = req.body._id
+    await Notes.findByIdAndDelete(noteID)
     res.sendStatus(200)
 })
 
