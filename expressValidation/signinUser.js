@@ -2,10 +2,6 @@ const checkUserSchema = {
     username: {
         errorMessage: 'Invalid username',
     },
-    email: {
-        errorMessage: 'Invalid username',
-        isEmail: true,
-    },
     password: {
         isLength: {
             options: { min: 6 },

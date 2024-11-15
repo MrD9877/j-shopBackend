@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { NewUser } from "../mongooseSchemas/signinUser.Schema.js";
+import { NewUser } from "../mongooseSchemas/signinUserSchema.js";
 import { generateAcsessToken, generateRefreshToken } from "../utility/genetageToken.js";
 
 const router = Router();
@@ -12,11 +12,10 @@ router.post("/login", async (req, res) => {
         res.sendStatus(401)
     }
     if (findUser.password === data.password) {
-        console.log(findUser)
         const accessToken = generateAcsessToken({ username: findUser.username })
         const refreshToken = generateRefreshToken({ username: findUser.username })
         res.cookie('accessToken', accessToken, {
-            maxAge: 1000 * 80,
+            maxAge: 1000 * 60 * 60 * 24,
             httpOnly: true,
             withCredentials: true,
             sameSite: 'None',
@@ -28,7 +27,8 @@ router.post("/login", async (req, res) => {
             sameSite: 'None',
             secure: true
         })
-        res.sendStatus(200)
+        req.session.user = refreshToken
+        res.send(200)
     }
 })
 

@@ -12,12 +12,12 @@ const port = 3000
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect("mongodb+srv://dhuruvbansl99:Shubham123@cluster0.jos6q.mongodb.net/");
+    await mongoose.connect("mongodb+srv://dhuruvbansl99:Shubham123@cluster0.jos6q.mongodb.net/jshop");
 }
 
 
 const corsOptions = {
-    origin: ["https://mrd9877.github.io", "http://localhost:3001", "http://192.168.63.138:3001"],
+    origin: ["https://mrd9877.github.io", "http://localhost:3001", "http://192.168.63.138:3001", "*"],
     credentials: true,
     methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
     allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With', 'Origin', 'Accept'],
@@ -36,11 +36,10 @@ app.use(session({
     saveUninitialized: false,
     proxy: true,
     cookie: {
-        maxAge: 60000 * 60,
         httpOnly: true,
-        withCredentials: true,
+        withCredentials: true, //if want to send cookies
         sameSite: 'None',
-        secure: true
+        secure: false //https = true , http = false
     },
     store: MongoStore.create({
         client: mongoose.connection.getClient()

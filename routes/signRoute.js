@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validationResult, checkSchema, matchedData } from 'express-validator'
 import checkUserSchema from "../expressValidation/signinUser.js";
-import { NewUser } from "../mongooseSchemas/signinUser.Schema.js";
+import { NewUser } from "../mongooseSchemas/signinUserSchema.js";
 
 const router = Router();
 
@@ -21,13 +21,5 @@ router.post("/signin", checkSchema(checkUserSchema), async (req, res) => {
     await user.save()
     res.send({ "valid": true }).status(200)
 })
-
-router.post("/signin2", async (req, res) => {
-    const user = new NewUser(req.body)
-    await user.save()
-    res.sendStatus(200)
-})
-
-
 
 export default router
