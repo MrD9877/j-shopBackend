@@ -50,6 +50,7 @@ app.use(session({
     },
     // name : "any name"  //by default it is set to connect.sid 
     // rolling: true // Force the session identifier cookie to be set on every response
+    // unset : keep // destroy will destroy after req ends 
 }))
 
 app.use(cookieParser())
