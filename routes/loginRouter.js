@@ -28,8 +28,12 @@ router.post("/login", async (req, res) => {
             secure: true
         })
         req.session.user = refreshToken
-        res.send(200)
+        res.sendStatus(200)
     }
+})
+router.get("/logout", (req, res) => {
+    req.session.destroy()
+    res.sendStatus(200)
 })
 
 export default router

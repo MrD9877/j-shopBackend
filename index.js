@@ -5,6 +5,9 @@ import cors from "cors"
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+dotenv.config()
 
 const app = express()
 const port = 3000
@@ -31,19 +34,22 @@ app.use(express.json({
     type: ['application/json', 'text/plain']
 }))
 app.use(session({
-    secret: 'Super secret secret',
-    resave: false,
-    saveUninitialized: false,
-    proxy: true,
-    cookie: {
-        httpOnly: true,
-        withCredentials: true, //if want to send cookies
-        sameSite: 'None',
-        secure: false //https = true , http = false
-    },
+    secret: process.env.SESSION_SECRET,// sign session with this
+    resave: false, //store on every request when true usefull if store have expiration date
+    saveUninitialized: false,//if true session will be saved even if no modification
+    proxy: true, // true : "X-Forwarded-Proto” header, false only send is direct connect,undefined use express 
     store: MongoStore.create({
         client: mongoose.connection.getClient()
-    })
+    }),
+    cookie: {
+        httpOnly: true, // when true client side js can n't use and see cookie 
+        withCredentials: true, //if want to send cookies
+        secure: false,//https = true , http = false
+        sameSite: 'None', // strict then cookie can be send to same site if lax with third but it use safe http
+        // Note There is a draft spec that requires that the Secure attribute be set to true when the SameSite attribute has been set to 'none'. Some web browsers or other clients may be adopting this specification.
+    },
+    // name : "any name"  //by default it is set to connect.sid 
+    // rolling: true // Force the session identifier cookie to be set on every response
 }))
 
 app.use(cookieParser())
