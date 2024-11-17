@@ -4,7 +4,7 @@ import isAdmin from "../utility/adminAuth.js";
 import { Product } from "../mongooseSchemas/productSchema.js";
 import { checkSchema, matchedData, validationResult } from "express-validator";
 import addProductSchema from "../expressValidation/addProduct.js";
-import { Categories } from "../mongooseSchemas/categorie.js";
+import { Categories } from "../mongooseSchemas/categorySchema.js";
 
 const router = Router()
 
@@ -66,12 +66,15 @@ router.get("/product", async (req, res) => {
     } else if (search) {
         const products = await Product.find({ $text: { $search: search } })
         res.send(products)
+    } else {
+        const products = await Product.find()
+        res.send(products)
     }
 })
 
-router.post("/categorie", isAuthenticated, isAdmin, async (req, res) => {
+router.post("/category", isAuthenticated, isAdmin, async (req, res) => {
     try {
-        const categorie = new Categories({ categorie: req.body.categorie })
+        const categorie = new Categories(req.body)
         await categorie.save()
         res.sendStatus(201)
     } catch (err) {
@@ -79,10 +82,11 @@ router.post("/categorie", isAuthenticated, isAdmin, async (req, res) => {
     }
 })
 
-router.get("/categorie", async (req, res) => {
-    if (req.query.categorie) {
+router.get("/category", async (req, res) => {
+    const category = req.query.category
+    if (category) {
         try {
-            const products = await Product.find({ categorie: req.query.categorie })
+            const products = await Product.find({ category: category })
             return res.send(products)
         } catch (err) {
             return res.status(502).send({ message: err.message })

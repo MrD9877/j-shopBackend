@@ -25,6 +25,9 @@ const user = new mongoose.Schema({
     },
     admin: {
         type: mongoose.Schema.Types.Number
+    },
+    avatar: {
+        type: mongoose.Schema.Types.String
     }
 })
 

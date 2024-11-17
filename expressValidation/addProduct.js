@@ -49,7 +49,7 @@ const addProductSchema = {
             errorMessage: "plese input decimal only"
         }
     },
-    categorie: {
+    category: {
         notEmpty: {
             errorMessage: "please input product categorie",
         },

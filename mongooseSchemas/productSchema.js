@@ -27,13 +27,13 @@ const product = new mongoose.Schema({
     colors: {
         type: mongoose.Schema.Types.Array
     },
-    categorie: {
+    category: {
         type: mongoose.Schema.Types.String
     },
     date: {
         type: mongoose.Schema.Types.Date
     }
 })
-product.index({ title: "text", description: "text" })
+product.index({ title: "text", description: "text", category: "text", price: "text" })
 
 export const Product = mongoose.model("Product", product)

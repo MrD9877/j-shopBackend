@@ -3,8 +3,7 @@ import { authToken } from "./authToken.js";
 function isAuthenticated(req, res, next) {
     req.sessionStore.get(req.sessionID, async (err, sessionData) => {
         if (err) {
-            res.send({ "msg": "please login to use this service" }).status(401)
-            return
+            return res.send({ "msg": "please login to use this service" }).status(401)
         }
         if (sessionData !== null) {
             req.cookies.refreshToken = await sessionData.Token;

@@ -28,7 +28,7 @@ router.post("/login", async (req, res) => {
             secure: true
         })
         req.session.user = refreshToken
-        res.sendStatus(200)
+        res.status(200).send({ msg: "welcome" })
     }
 })
 router.get("/logout", (req, res) => {
