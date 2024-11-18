@@ -6,6 +6,7 @@ import editprofileRouter from "./editprofileRoute.js"
 import adminRoute from "./adminRoute.js"
 import cartRoute from "./cartRoute.js"
 import addProductRoute from "./addProductRoute.js"
+import orderRoute from "./orderRoute.js"
 import { Router } from "express"
 
 
@@ -19,5 +20,6 @@ router.use(editprofileRouter)
 router.use(adminRoute)
 router.use(cartRoute)
 router.use(addProductRoute)
+router.use(orderRoute)
 
 export default router
