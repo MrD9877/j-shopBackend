@@ -1,6 +1,7 @@
 import { Router } from "express";
 import isAuthenticated from "../utility/authentication.js";
 import { NewUser } from "../mongooseSchemas/signinUserSchema.js";
+import isAdmin from "../utility/adminAuth.js";
 
 
 const router = Router()
@@ -36,4 +37,13 @@ router.get("/user", isAuthenticated, async (req, res) => {
     }
 })
 
+router.get("/customer", isAuthenticated, isAdmin, async (req, res) => {
+    const username = req.query.username;
+    try {
+        const userInfo = await NewUser.findOne({ username: username })
+        res.status(200).send(userInfo)
+    } catch {
+        res.sendStatus(400)
+    }
+})
 export default router

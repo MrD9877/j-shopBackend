@@ -12,6 +12,17 @@ const orderSchema = new mongoose.Schema({
     orderDate: {
         require: true,
         type: mongoose.Schema.Types.Date
+    },
+    amount: {
+        require: true,
+        type: mongoose.Schema.Types.Number
+    },
+    orderId: {
+        require: true,
+        type: mongoose.Schema.Types.String
+    },
+    status: {
+        type: mongoose.Schema.Types.String
     }
 })
 
