@@ -11,7 +11,7 @@ router.get('/token', (req, res) => {
     if (user === 403) return res.sendStatus(403)
     const accessToken = generateAcsessToken({ username: user.username })
     res.cookie('accessToken', accessToken, {
-        maxAge: 1000 * 80,
+        maxAge: 1000 * 60 * 60 * 5,
         httpOnly: true,
         withCredentials: true,
         sameSite: 'None',

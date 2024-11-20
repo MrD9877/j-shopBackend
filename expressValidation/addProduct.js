@@ -29,9 +29,6 @@ const addProductSchema = {
         optional: {
             options: { checkFalsy: true }
         },
-        isArray: {
-            errorMessage: "plese input array only"
-        }
     },
     colors: {
         optional: {

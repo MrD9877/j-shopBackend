@@ -7,11 +7,13 @@ import adminRoute from "./adminRoute.js"
 import cartRoute from "./cartRoute.js"
 import addProductRoute from "./addProductRoute.js"
 import orderRoute from "./orderRoute.js"
+import testRouter from "./test.js"
 import { Router } from "express"
 
 
 const router = Router();
 
+router.use(testRouter);
 router.use(conctRouter);
 router.use(signinRoute);
 router.use(loginRoute);

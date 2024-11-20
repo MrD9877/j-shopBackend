@@ -4,6 +4,7 @@ import { Orders } from "../mongooseSchemas/orderSchema.js"
 import { Product } from "../mongooseSchemas/productSchema.js"
 import { nanoid } from "nanoid"
 import isAdmin from "../utility/adminAuth.js"
+import { generateRandom } from "../utility/randomKey.js"
 
 const router = Router()
 
@@ -52,8 +53,13 @@ router.post("/order", isAuthenticated, async (req, res) => {
     }
     const date = Date.now()
     // order 
-    const order = new Orders({ username: username, products: products, orderDate: date, amount: amount, orderId: id, status: "new" })
-    await order.save()
+    try {
+        const order = new Orders({ username: username, products: products, orderDate: date, amount: amount, orderId: generateRandom(10), status: "new" })
+        await order.save()
+    } catch {
+        const order = new Orders({ username: username, products: products, orderDate: date, amount: amount, orderId: generateRandom(12), status: "new" })
+        await order.save()
+    }
     res.sendStatus(200)
 
 })

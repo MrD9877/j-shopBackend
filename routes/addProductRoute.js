@@ -5,19 +5,63 @@ import { Product } from "../mongooseSchemas/productSchema.js";
 import { checkSchema, matchedData, validationResult } from "express-validator";
 import addProductSchema from "../expressValidation/addProduct.js";
 import { Categories } from "../mongooseSchemas/categorySchema.js";
+import multer from 'multer'
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import dotenv from 'dotenv'
+import { generateRandom } from "../utility/randomKey.js";
+import sharp from 'sharp'
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const router = Router()
+dotenv.config()
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
-router.post("/product", checkSchema(addProductSchema), isAuthenticated, isAdmin, async (req, res) => {
-    const result = validationResult(req)
-    if (!result.isEmpty()) return res.send({
-        "valid": false,
-        "msg": result.errors[0].msg
-    })
-    const data = matchedData(req)
-    const date = Date.now().toString()
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const bucketAccess = process.env.BUCKET_ACCESS_KEY
+const bucketSecret = process.env.BUCKET_SECRET_KEY
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: bucketAccess,
+        secretAccessKey: bucketSecret
+    },
+    region: bucketRegion
+})
+
+router.post("/product", isAuthenticated, isAdmin, upload.any('image'), async (req, res) => {
+    const files = req.files
+    const images = []
+    const productId = generateRandom(10)
+    // uploading files to aws ... 
     try {
-        const product = new Product({ ...data, date: date })
+        files.forEach(async (file) => {
+            const imageName = generateRandom(32)
+            images.push(imageName)
+            const params = {
+                Bucket: bucketName,
+                Key: imageName,
+                Body: file.buffer,
+                ContentType: file.mimetype
+            }
+            const commad = new PutObjectCommand(params)
+            await s3.send(commad)
+        })
+    } catch {
+        return res.sendStatus(502)
+    }
+    const data = {
+        title: req.body.title,
+        stock: req.body.stock,
+        price: req.body.price,
+        category: req.body.category,
+        description: req.body.description,
+    }
+    console.log(req.body)
+    const date = Date.now()
+    try {
+        const product = new Product({ ...data, "date": date, images: images, productId: productId })
         await product.save()
         res.sendStatus(201)
     } catch (err) {
