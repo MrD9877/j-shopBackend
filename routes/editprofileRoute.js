@@ -29,7 +29,8 @@ router.get("/user", isAuthenticated, async (req, res) => {
             phonenumber: userInfo.phonenumber,
             email: userInfo.email,
             deliveryaddress: userInfo.deliveryaddress,
-            avatar: userInfo.avatar
+            avatar: userInfo.avatar,
+            admin: userInfo.admin
         }
         res.status(200).send(user)
     } catch (err) {

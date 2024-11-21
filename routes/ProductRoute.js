@@ -30,6 +30,16 @@ const s3 = new S3Client({
     region: bucketRegion
 })
 
+async function getImagesUrls(image) {
+    const getObjectParams = {
+        Bucket: bucketName,
+        Key: image
+    }
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 * 8 });
+    return url
+}
+
 router.post("/product", isAuthenticated, isAdmin, upload.any('image'), async (req, res) => {
     const files = req.files
     const images = []
@@ -96,6 +106,34 @@ router.patch("/product", isAuthenticated, isAdmin, async (req, res) => {
     }
 })
 
+async function setUrls(images) {
+    const urls = []
+    for (let i = 0; i < images.length; i++) {
+        const url = await getImagesUrls(images[i])
+        urls.push(url)
+    }
+    return urls
+}
+
+
+async function intigrateUrls(item, type) {
+    if (type === "products") {
+        let returnItem = []
+        for (let i = 0; i < item.length; i++) {
+            const product = item[i]
+            const urls = await setUrls([...product.images])
+            product.images = [...urls]
+            returnItem.push(product)
+        }
+        return returnItem
+    } else if (type === "product") {
+        const urls = await setUrls(item.images)
+        const productWithurl = item
+        productWithurl.images = [...urls]
+        return productWithurl
+    }
+}
+
 router.get("/product", async (req, res) => {
     const productId = req.query.productId
     const search = req.query.search
@@ -103,16 +141,19 @@ router.get("/product", async (req, res) => {
         try {
             const product = await Product.findOne({ productId: productId })
             if (!product) return res.status(400).send({ message: "no product with this id" })
-            return res.send(product)
+            const productWithUrl = await intigrateUrls(product, "product")
+            return res.send(productWithUrl)
         } catch (err) {
             return res.status(400).send({ message: err.message })
         }
     } else if (search) {
         const products = await Product.find({ $text: { $search: search } })
-        res.send(products)
+        const productsWithUrls = await intigrateUrls(products, "products")
+        res.send(productsWithUrls)
     } else {
         const products = await Product.find()
-        res.send(products)
+        const productsWithUrls = await intigrateUrls(products, "products")
+        res.send(productsWithUrls)
     }
 })
 

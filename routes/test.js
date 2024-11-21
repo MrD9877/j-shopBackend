@@ -29,7 +29,7 @@ const upload = multer({ storage: storage })
 router.get('/uploadtest', async (req, res) => {
     const getObjectParams = {
         Bucket: bucketName,
-        Key: '9303a4bcd2659516ed46a48bfbef117879e608b486111d7b0832b540dcd25862'
+        Key: 'd89535c7ab1ea33ca59a644e42a278b3f9f0778b90536e266a8c0eeae86d8585'
     }
     const command = new GetObjectCommand(getObjectParams);
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
