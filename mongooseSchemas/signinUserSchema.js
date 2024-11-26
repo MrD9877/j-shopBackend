@@ -28,6 +28,17 @@ const user = new mongoose.Schema({
     },
     avatar: {
         type: mongoose.Schema.Types.String
+    },
+    shiprocket: {
+        token: {
+            type: mongoose.Schema.Types.String
+        },
+        email: {
+            type: mongoose.Schema.Types.String
+        },
+        password: {
+            type: mongoose.Schema.Types.String
+        }
     }
 })
 

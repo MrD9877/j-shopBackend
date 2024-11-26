@@ -27,6 +27,9 @@ const product = new mongoose.Schema({
     colors: {
         type: mongoose.Schema.Types.Array
     },
+    size: {
+        type: mongoose.Schema.Types.Array
+    },
     category: {
         type: mongoose.Schema.Types.String
     },

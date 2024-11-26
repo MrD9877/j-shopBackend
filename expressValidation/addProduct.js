@@ -38,6 +38,14 @@ const addProductSchema = {
             errorMessage: "plese input array only"
         }
     },
+    size: {
+        optional: {
+            options: { checkFalsy: true }
+        },
+        isArray: {
+            errorMessage: "plese input array only"
+        }
+    },
     stock: {
         optional: {
             options: { checkFalsy: true }

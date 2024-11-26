@@ -7,12 +7,20 @@ import isAdmin from "../utility/adminAuth.js";
 const router = Router()
 
 router.post("/user", isAuthenticated, async (req, res) => {
-    const useremail = req.body.user.email
+    const shiprocket = req.body.shiprocket
     const user = req.body.user
-    const change = await NewUser.updateOne({ username: res.user.username },
-        { $set: { name: user.name, phonenumber: user.phonenumber, email: (useremail ? useremail : null), deliveryaddress: req.body.deliveryaddress, avatar: user.avatar } },
-        { upsert: false, multi: false }
-    )
+    let change
+    if (shiprocket) {
+        change = await NewUser.updateOne({ username: res.user.username },
+            { $set: { shiprocket: shiprocket } },
+            { upsert: false, multi: false }
+        )
+    } else {
+        change = await NewUser.updateOne({ username: res.user.username },
+            { $set: { name: user.name, phonenumber: user.phonenumber, email: (user.email ? user.email : null), deliveryaddress: req.body.deliveryaddress, avatar: user.avatar } },
+            { upsert: false, multi: false }
+        )
+    }
     if (change.acknowledged) {
         res.sendStatus(201)
     } else {
@@ -30,7 +38,8 @@ router.get("/user", isAuthenticated, async (req, res) => {
             email: userInfo.email,
             deliveryaddress: userInfo.deliveryaddress,
             avatar: userInfo.avatar,
-            admin: userInfo.admin
+            admin: userInfo.admin,
+            shiprocket: userInfo.shiprocket
         }
         res.status(200).send(user)
     } catch (err) {

@@ -1,9 +1,6 @@
 import { Router } from "express";
 import dotenv from "dotenv"
 import { NewUser } from "../mongooseSchemas/signinUserSchema.js";
-import isAuthenticated from "../utility/authentication.js";
-import isAdmin from "../utility/adminAuth.js";
-
 dotenv.config()
 
 const router = Router()

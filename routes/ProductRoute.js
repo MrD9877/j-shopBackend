@@ -2,15 +2,12 @@ import { Router } from "express";
 import isAuthenticated from "../utility/authentication.js";
 import isAdmin from "../utility/adminAuth.js";
 import { Product } from "../mongooseSchemas/productSchema.js";
-import { checkSchema, matchedData, validationResult } from "express-validator";
-import addProductSchema from "../expressValidation/addProduct.js";
-import { Categories } from "../mongooseSchemas/categorySchema.js";
 import multer from 'multer'
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import dotenv from 'dotenv'
 import { generateRandom } from "../utility/randomKey.js";
 import sharp from 'sharp'
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { intigrateUrls } from "../utility/findImageUrl.js";
 
 const router = Router()
 dotenv.config()
@@ -30,15 +27,6 @@ const s3 = new S3Client({
     region: bucketRegion
 })
 
-async function getImagesUrls(image) {
-    const getObjectParams = {
-        Bucket: bucketName,
-        Key: image
-    }
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 * 8 });
-    return url
-}
 
 router.post("/product", isAuthenticated, isAdmin, upload.any('image'), async (req, res) => {
     const files = req.files
@@ -63,12 +51,14 @@ router.post("/product", isAuthenticated, isAdmin, upload.any('image'), async (re
     }
     const data = {
         title: req.body.title,
+        colors: req.body.colors.split(","),
+        size: req.body.size.split(","),
         stock: req.body.stock,
         price: req.body.price,
         category: req.body.category,
         description: req.body.description,
     }
-    console.log(req.body)
+    console.log(req.body.size.split(","))
     const date = Date.now()
     try {
         const product = new Product({ ...data, "date": date, images: images, productId: productId })
@@ -81,8 +71,22 @@ router.post("/product", isAuthenticated, isAdmin, upload.any('image'), async (re
 
 router.delete("/product", isAuthenticated, isAdmin, async (req, res) => {
     try {
+        const product = await Product.findOne({ productId: req.body.productId })
+        const images = product.images
+        images.forEach(async (image) => {
+            const params = {
+                Bucket: bucketName,
+                Key: image
+            }
+            const command = new DeleteObjectCommand(params)
+            await s3.send(command)
+        })
+    } catch (err) {
+        return res.status(502).send({ message: err.message })
+    }
+    try {
         await Product.deleteOne({ productId: req.body.productId })
-        res.sendStatus(204)
+        res.sendStatus(200)
     } catch (err) {
         return res.status(502).send({ message: err.message })
     }
@@ -93,6 +97,7 @@ router.patch("/product", isAuthenticated, isAdmin, async (req, res) => {
         const patch = req.body.patch;
         const productId = req.body.productId;
         const content = req.body.content;
+        console.log(req.body)
         const dbResponse = await Product.updateOne({ productId: productId },
             { $set: { [patch]: content } },
             { upsert: false, multi: false }
@@ -106,33 +111,6 @@ router.patch("/product", isAuthenticated, isAdmin, async (req, res) => {
     }
 })
 
-async function setUrls(images) {
-    const urls = []
-    for (let i = 0; i < images.length; i++) {
-        const url = await getImagesUrls(images[i])
-        urls.push(url)
-    }
-    return urls
-}
-
-
-async function intigrateUrls(item, type) {
-    if (type === "products") {
-        let returnItem = []
-        for (let i = 0; i < item.length; i++) {
-            const product = item[i]
-            const urls = await setUrls([...product.images])
-            product.images = [...urls]
-            returnItem.push(product)
-        }
-        return returnItem
-    } else if (type === "product") {
-        const urls = await setUrls(item.images)
-        const productWithurl = item
-        productWithurl.images = [...urls]
-        return productWithurl
-    }
-}
 
 router.get("/product", async (req, res) => {
     const productId = req.query.productId
@@ -156,33 +134,4 @@ router.get("/product", async (req, res) => {
         res.send(productsWithUrls)
     }
 })
-
-router.post("/category", isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const categorie = new Categories(req.body)
-        await categorie.save()
-        res.sendStatus(201)
-    } catch (err) {
-        res.status(400).send({ message: err.message })
-    }
-})
-
-router.get("/category", async (req, res) => {
-    const category = req.query.category
-    if (category) {
-        try {
-            const products = await Product.find({ category: category })
-            return res.send(products)
-        } catch (err) {
-            return res.status(502).send({ message: err.message })
-        }
-    }
-    try {
-        const categories = await Categories.find()
-        res.send(categories)
-    } catch (err) {
-        res.status(502).send({ message: err.message })
-    }
-})
-
 export default router

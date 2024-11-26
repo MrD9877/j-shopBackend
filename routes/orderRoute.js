@@ -9,7 +9,7 @@ import { generateRandom } from "../utility/randomKey.js"
 const router = Router()
 
 const productsOrdered = []
-const stock = { instock: true, product: null }
+const stock = { instock: true, product: null, badRequest: false }
 
 async function checkForStock(products, req, res) {
     try {
@@ -17,6 +17,7 @@ async function checkForStock(products, req, res) {
             if (stock.instock) {
                 const product = await Product.findOne({ productId: products[i].productId })
                 productsOrdered.push(product)
+                stock.badRequest = products[i].count < 0 ? true : false
                 stock.instock = product.stock >= products[i].count ? true : false
                 stock.product = stock.instock ? null : products[i]
             }
@@ -36,6 +37,7 @@ router.post("/order", isAuthenticated, async (req, res) => {
     // check if product in stock 
     await checkForStock(products, req, res)
     if (!stock.instock) return res.status(400).send({ msg: `${stock.product.title} is not in stock please remove this item` })
+    if (stock.badRequest) return res.status(400).send({ msg: `bad reqest` })
     //sutract stock
 
     if (stock.instock) {
@@ -72,6 +74,17 @@ router.get("/order", isAuthenticated, async (req, res) => {
     } catch (err) {
         res.status(502).send({ msg: "opp!Somting went wrong try again" })
     }
+})
+
+router.patch("/order", isAuthenticated, isAdmin, async (req, res) => {
+    const orderId = req.query.orderId;
+    const shipmentDetails = req.body
+    const save = await Orders.updateOne({ orderId: orderId },
+        { $set: { shipmentDetails: shipmentDetails } },
+        { upsert: false, multi: false }
+    )
+    if (save.acknowledged) return res.sendStatus(200)
+    if (!save.acknowledged) return res.sendStatus(502)
 })
 
 router.get("/orders", isAuthenticated, isAdmin, async (req, res) => {
