@@ -21,6 +21,14 @@ const product = new mongoose.Schema({
     images: {
         type: mongoose.Schema.Types.Array
     },
+    imagesUrl: {
+        urls: {
+            type: mongoose.Schema.Types.Array
+        },
+        generated: {
+            type: mongoose.Schema.Types.Date
+        }
+    },
     stock: {
         type: mongoose.Schema.Types.Number
     },

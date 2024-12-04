@@ -7,7 +7,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client
 import dotenv from 'dotenv'
 import { generateRandom } from "../utility/randomKey.js";
 import sharp from 'sharp'
-import { intigrateUrls } from "../utility/findImageUrl.js";
+import setUrls, { intigrateUrls } from "../utility/findImageUrl.js";
 
 const router = Router()
 dotenv.config()
@@ -60,8 +60,9 @@ router.post("/product", isAuthenticated, isAdmin, upload.any('image'), async (re
     }
     console.log(req.body.size.split(","))
     const date = Date.now()
+    const urls = await setUrls(images)
     try {
-        const product = new Product({ ...data, "date": date, images: images, productId: productId })
+        const product = new Product({ ...data, "date": date, images: images, productId: productId, imagesUrl: { urls: urls, generated: date } })
         await product.save()
         res.sendStatus(201)
     } catch (err) {

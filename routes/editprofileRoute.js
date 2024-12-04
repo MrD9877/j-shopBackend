@@ -37,7 +37,7 @@ router.get("/user", isAuthenticated, async (req, res) => {
             phonenumber: userInfo.phonenumber,
             email: userInfo.email,
             deliveryaddress: userInfo.deliveryaddress,
-            avatar: userInfo.avatar,
+            avatarId: userInfo.avatarId,
             admin: userInfo.admin,
             shiprocket: userInfo.shiprocket
         }

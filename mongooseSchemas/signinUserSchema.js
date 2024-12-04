@@ -26,8 +26,8 @@ const user = new mongoose.Schema({
     admin: {
         type: mongoose.Schema.Types.Number
     },
-    avatar: {
-        type: mongoose.Schema.Types.String
+    avatarId: {
+        type: mongoose.Schema.Types.Number
     },
     shiprocket: {
         token: {
