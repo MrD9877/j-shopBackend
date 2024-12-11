@@ -10,10 +10,8 @@ function notAllowedFnc(username) {
   let notAllowed = false;
   const arr = username.split("");
   if (arr[0] === "e" && arr[1] === "-") notAllowed = true;
-  console.log(arr, notAllowed);
   return notAllowed;
 }
-notAllowedFnc("e-mail");
 router.post("/signin", checkSchema(checkUserSchema), async (req, res) => {
   const result = validationResult(req);
   if (!result.isEmpty())
@@ -26,16 +24,19 @@ router.post("/signin", checkSchema(checkUserSchema), async (req, res) => {
   // this is for username we are not allowing or convention
   const notAllowed = notAllowedFnc(username);
   if (notAllowed) return res.status(400).send({ msg: "username can't start with e-" });
-  const findDublicateUserName = await NewUser.findOne({ username: username });
-  if (findDublicateUserName)
-    return res.send({
-      valid: false,
-      msg: "please use different username",
-    });
-  const avatarId = await asignAvatar();
-  const user = new NewUser({ ...data, avatarId });
-  await user.save();
-  res.status(200);
+  try {
+    const avatarId = await asignAvatar();
+    const user = new NewUser({ ...data, avatarId });
+    await user.save();
+    return res.sendStatus(200);
+  } catch (err) {
+    if (err.message && err.message.includes("duplicate"))
+      return res.status(400).send({
+        valid: false,
+        msg: "please use different username",
+      });
+    res.sendStatus(502);
+  }
 });
 
 export default router;

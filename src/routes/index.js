@@ -10,6 +10,7 @@ import orderRoute from "./orderRoute.js";
 import categoryRoute from "./caregoryRoute.js";
 import avatarRoute from "./addAvatarRoute.js";
 import googleSignIn from "./googleSigninRoute.js";
+import openAi from "./openAiRoute.js";
 import { Router } from "express";
 
 const router = Router();
@@ -26,5 +27,6 @@ router.use(productRoute);
 router.use(orderRoute);
 router.use(avatarRoute);
 router.use(googleSignIn);
+router.use(openAi);
 
 export default router;

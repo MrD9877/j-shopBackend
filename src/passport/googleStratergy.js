@@ -37,6 +37,7 @@ export default passport.use(
         if (findUser) done(null, findUser);
         if (!findUser) {
           const avatarId = await asignAvatar();
+          console.log(avatarId);
           const user = new NewUser({
             email: profile.emails[0].value,
             username: userName,
