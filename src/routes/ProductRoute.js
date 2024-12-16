@@ -6,8 +6,6 @@ import multer from "multer";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import dotenv from "dotenv";
 import { generateRandom } from "../utility/randomKey.js";
-import sharp from "sharp";
-import setUrls, { intigrateUrls } from "../utility/findImageUrl.js";
 
 const router = Router();
 dotenv.config();
@@ -58,9 +56,8 @@ router.post("/product", isAuthenticated, isAdmin, upload.any("image"), async (re
     description: req.body.description,
   };
   const date = Date.now();
-  const urls = await setUrls(images);
   try {
-    const product = new Product({ ...data, date: date, images: images, productId: productId, imagesUrl: { urls: urls, generated: date } });
+    const product = new Product({ ...data, date, images, productId });
     await product.save();
     res.sendStatus(201);
   } catch (err) {
@@ -116,32 +113,28 @@ router.get("/product", async (req, res) => {
     try {
       const product = await Product.findOne({ productId: productId });
       if (!product) return res.status(400).send({ message: "no product with this id" });
-      const productWithUrl = await intigrateUrls(product, "product");
-      return res.status(200).send(productWithUrl);
+      return res.status(200).send(product);
     } catch (err) {
       return res.status(400).send({ message: err.message });
     }
   } else if (search) {
     try {
       const products = await Product.find({ $text: { $search: search } });
-      const productsWithUrls = await intigrateUrls(products, "products");
-      res.send(productsWithUrls);
+      res.status(200).send(products);
     } catch (err) {
       return res.status(200).status(400).send({ message: err.message });
     }
   } else if (category) {
     try {
       const products = await Product.find({ category: category });
-      const productsWithUrls = await intigrateUrls(products, "products");
-      res.send(productsWithUrls);
+      res.status(200).send(products);
     } catch (err) {
       return res.status(200).status(400).send({ message: err.message });
     }
   } else {
     try {
       const products = await Product.find();
-      const productsWithUrls = await intigrateUrls(products, "products");
-      res.status(200).send(productsWithUrls);
+      res.status(200).send(products);
     } catch (err) {
       return res.status(400).send({ message: err.message });
     }

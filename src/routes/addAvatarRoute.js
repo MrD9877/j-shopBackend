@@ -5,8 +5,6 @@ import isAdmin from "../utility/adminAuth.js";
 import multer from "multer";
 import { generateRandom } from "../utility/randomKey.js";
 import uploadImage from "../utility/upLoadImage.js";
-import setUrls from "../utility/findImageUrl.js";
-import { checkDate } from "../utility/checkGeneratedDifference.js";
 
 const router = Router();
 const storage = multer.memoryStorage();
@@ -30,29 +28,10 @@ router.post("/avatar", isAuthenticated, isAdmin, upload.any("image"), async (req
 });
 
 router.get("/avatar", async (req, res) => {
-  const timeNow = Date.now();
   const id = req.query.avatarId;
   try {
     const avatar = await Avatar.findOne({ id: id });
-    const checkLastUrlGenerated = checkDate(avatar);
-    let url;
-    if (checkLastUrlGenerated > 6) {
-      const refreshUrl = await setUrls([avatar.avatar]);
-      url = refreshUrl[0];
-      const imageUrl = {
-        url: url,
-        generated: timeNow,
-      };
-      await Avatar.updateOne(
-        { id: id },
-        {
-          $set: { imageUrl: imageUrl },
-        }
-      );
-    } else {
-      url = avatar.imageUrl.url;
-    }
-    res.status(200).send({ url: url });
+    res.status(200).send(avatar);
   } catch {
     res.sendStatus(400);
   }

@@ -1,4 +1,3 @@
-import conctRouter from "./contactRoute.js";
 import signinRoute from "./signRoute.js";
 import loginRoute from "./loginRouter.js";
 import tokenRoute from "./tokenRoute.js";
@@ -11,12 +10,12 @@ import categoryRoute from "./caregoryRoute.js";
 import avatarRoute from "./addAvatarRoute.js";
 import googleSignIn from "./googleSigninRoute.js";
 import openAi from "./openAiRoute.js";
+import emailRoute from "./resetPassword.js";
 import { Router } from "express";
 
 const router = Router();
 
 router.use(categoryRoute);
-router.use(conctRouter);
 router.use(signinRoute);
 router.use(loginRoute);
 router.use(tokenRoute);
@@ -28,5 +27,6 @@ router.use(orderRoute);
 router.use(avatarRoute);
 router.use(googleSignIn);
 router.use(openAi);
+router.use(emailRoute);
 
 export default router;
