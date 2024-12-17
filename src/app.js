@@ -28,6 +28,7 @@ export const useApp = () => {
   );
   app.use(
     session({
+      proxy: true,
       secret: process.env.SESSION_SECRET, // sign session with this
       resave: false, //store on every request when true usefull if store have expiration date
       saveUninitialized: false, //if true session will be saved even if no modification
