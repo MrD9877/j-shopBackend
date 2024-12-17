@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { useApp } from "./app.js";
+import { useApp } from "./src/app.js";
 dotenv.config();
 const string = process.env.MONGODB_STRING;
 async function main() {
