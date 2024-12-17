@@ -28,7 +28,6 @@ export const useApp = () => {
   );
   app.use(
     session({
-      name: "MyCoolWebAppCookieName",
       secret: process.env.SESSION_SECRET, // sign session with this
       resave: false, //store on every request when true usefull if store have expiration date
       saveUninitialized: false, //if true session will be saved even if no modification
@@ -36,6 +35,7 @@ export const useApp = () => {
         client: mongoose.connection.getClient(),
       }),
       cookie: {
+        maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true, // when true client side js can n't use and see cookie
         withCredentials: true, //if want to send cookies
         secure: true,
