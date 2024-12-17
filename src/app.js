@@ -12,7 +12,7 @@ export const useApp = () => {
   const app = express();
 
   const corsOptions = {
-    origin: ["http://localhost:3001", "http://192.168.63.138:3001", process.env.ORIGIN_ONE, process.env.ORIGIN_TWO, "*"],
+    origin: ["http://localhost:3001", "http://192.168.63.138:3001", process.env.ORIGIN_ONE, process.env.ORIGIN_TWO, "https://j-store-mrd9877s-projects.vercel.app"],
     credentials: true,
     methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
     allowedHeaders: ["Content-Type", "Authorization", "Content-Length", "X-Requested-With", "Origin", "Accept"],
