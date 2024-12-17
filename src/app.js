@@ -7,12 +7,12 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import passport from "passport";
-
+dotenv.config();
 export const useApp = () => {
   const app = express();
 
   const corsOptions = {
-    origin: ["http://localhost:3001", "http://192.168.63.138:3001"],
+    origin: ["http://localhost:3001", "http://192.168.63.138:3001", process.env.ORIGIN_ONE, process.env.ORIGIN_TWO],
     credentials: true,
     methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
     allowedHeaders: ["Content-Type", "Authorization", "Content-Length", "X-Requested-With", "Origin", "Accept"],
@@ -37,7 +37,7 @@ export const useApp = () => {
       cookie: {
         httpOnly: true, // when true client side js can n't use and see cookie
         withCredentials: true, //if want to send cookies
-        secure: false, //https = true , http = false
+        secure: true, //https = true , http = false
         // Note There is a draft spec that requires that the Secure attribute be set to true when the SameSite attribute has been set to 'none'. Some web browsers or other clients may be adopting this specification.
       },
       // name : "any name"  //by default it is set to connect.sid
