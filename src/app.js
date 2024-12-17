@@ -39,9 +39,9 @@ export const useApp = () => {
         httpOnly: true, // when true client side js can n't use and see cookie
         withCredentials: true, //if want to send cookies
         secure: true, //https = true , http = false
+        sameSite: "none",
         // Note There is a draft spec that requires that the Secure attribute be set to true when the SameSite attribute has been set to 'none'. Some web browsers or other clients may be adopting this specification.
       },
-      sameSite: "none",
 
       // name : "any name"  //by default it is set to connect.sid
       // rolling: true // Force the session identifier cookie to be set on every response
