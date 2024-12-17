@@ -28,6 +28,7 @@ export const useApp = () => {
   );
   app.use(
     session({
+      name: "MyCoolWebAppCookieName",
       secret: process.env.SESSION_SECRET, // sign session with this
       resave: false, //store on every request when true usefull if store have expiration date
       saveUninitialized: false, //if true session will be saved even if no modification
@@ -37,7 +38,7 @@ export const useApp = () => {
       cookie: {
         httpOnly: true, // when true client side js can n't use and see cookie
         withCredentials: true, //if want to send cookies
-        secure: false,
+        secure: true,
         sameSite: "none", //https = true , http = false
         // Note There is a draft spec that requires that the Secure attribute be set to true when the SameSite attribute has been set to 'none'. Some web browsers or other clients may be adopting this specification.
       },
