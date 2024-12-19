@@ -26,7 +26,7 @@ export default passport.use(
     {
       clientID: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECREAT,
-      callbackURL: "http://localhost:3000/api/auth/callback/google",
+      callbackURL: "https://j-store-mrd9877s-projects.vercel.app//api/auth/callback/google",
       scope: scopes,
     },
 
